@@ -4,6 +4,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from Course.models import Course, CourseMaterial
 from Activity.models import Activity, Submission
+from UserAuthentication.models import Account
 
 
 # Create your views here.
@@ -65,10 +66,29 @@ def getExactCourse(request, course_id):
    
     
     return JsonResponse({
-        'course': {
-            'course': course.course_code,
+     
+            'course_code': course.course_code,
             'course_description': course.course_description,
             'course_materials': list(course_materials.values()),
             'activities': list(activities.values())
-        }
+        
     })
+    
+    
+def lesson(request, lesson_id):
+    lesson = CourseMaterial.objects.get(id=lesson_id)
+    return JsonResponse({"material_name": lesson.material_name, "material_description": lesson.material_description, "course_code": lesson.course_code.course_code, "course_name": lesson.course_code.course_name, "course_description": lesson.course_code.course_description})
+
+
+def exact_activity(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    return JsonResponse({"activity_name": activity.activity_name, "activity_description": activity.activity_description, "course_code": activity.course_code.course_code, "course_name": activity.course_code.course_name})
+
+
+@csrf_exempt    
+def submit_activity(request, activity_id):
+    data = request.POST
+    activity = Activity.objects.get(id=activity_id)
+    submission = Submission(activity_id=activity, student_id=Account.objects.get(id = data['currentUser']), submission_grade=None, answer=data['formData'])
+    submission.save()
+    return JsonResponse({"message": "Submission successful"})
