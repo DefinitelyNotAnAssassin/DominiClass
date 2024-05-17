@@ -96,3 +96,36 @@ def submit_activity(request, activity_id):
         submission = Submission(activity_id=activity, student_id=Account.objects.get(id = data['currentUser']), submission_grade=None, answer=data['formData'])
         submission.save()
         return JsonResponse({"message": "Submission successful"})
+    
+    
+@csrf_exempt    
+def getMissingActivities(request):
+    data = request.POST
+    # get the courses of the current user and store all of the missing activities 
+    
+    courses = Course.objects.filter(enrolled_students=data['currentUser'])
+    missing_activities = []
+    for course in courses:
+        activities = Activity.objects.filter(course_code=course)
+        for activity in activities:
+            submission = Submission.objects.filter(activity_id=activity, student_id=data['currentUser'])
+            if not submission:
+                missing_activities.append({'activity_name': activity.activity_name, 'course_name': course.course_name})
+                
+    return JsonResponse({'missing_activities': missing_activities})
+
+@csrf_exempt
+def getFinishedActivities(request):
+    data = request.POST
+    # get the courses of the current user and store all of the missing activities 
+    
+    courses = Course.objects.filter(enrolled_students=data['currentUser'])
+    finished_activities = []
+    for course in courses:
+        activities = Activity.objects.filter(course_code=course)
+        for activity in activities:
+            submission = Submission.objects.filter(activity_id=activity, student_id=data['currentUser'])
+            if submission:
+                finished_activities.append({'activity_name': activity.activity_name, 'course_name': course.course_name})
+                
+    return JsonResponse({'finished_activities': finished_activities})
