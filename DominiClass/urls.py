@@ -21,4 +21,6 @@ urlpatterns = [
     path('', include('LandingPage.urls')),
     path('', include('UserAuthentication.urls')),
     path('', include('Course.urls')),
+    path('', include('Grades.urls')),
+    path('lms/', include('UserInterface.urls')),
 ]

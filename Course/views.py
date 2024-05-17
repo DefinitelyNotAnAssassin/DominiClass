@@ -89,6 +89,10 @@ def exact_activity(request, activity_id):
 def submit_activity(request, activity_id):
     data = request.POST
     activity = Activity.objects.get(id=activity_id)
-    submission = Submission(activity_id=activity, student_id=Account.objects.get(id = data['currentUser']), submission_grade=None, answer=data['formData'])
-    submission.save()
-    return JsonResponse({"message": "Submission successful"})
+    isExisting = Submission.objects.filter(activity_id=activity, student_id=Account.objects.get(id = data['currentUser']))
+    if isExisting:
+        return JsonResponse({"message": "Submission already exists"})
+    else:
+        submission = Submission(activity_id=activity, student_id=Account.objects.get(id = data['currentUser']), submission_grade=None, answer=data['formData'])
+        submission.save()
+        return JsonResponse({"message": "Submission successful"})

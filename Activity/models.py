@@ -17,7 +17,7 @@ class Activity(models.Model):
 class Submission(models.Model):
     activity_id = models.ForeignKey('Activity.Activity', on_delete=models.CASCADE)
     student_id = models.ForeignKey('UserAuthentication.Account', on_delete=models.CASCADE)
-    submission_grade = models.FloatField(null=True, blank=True)
+    submission_grade = models.FloatField(default = 0.0)
     answer = models.TextField()
 
     
