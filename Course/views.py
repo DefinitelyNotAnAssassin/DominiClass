@@ -32,6 +32,14 @@ def enroll(request):
     data = request.POST
     print(data)
     try:
+        
+        # course_code 
+        
+        # SELECT * FROM Course WHERE course_code = data['course_code']
+        
+        # IT101
+        
+        # Object Relational Mapping (ORM)
         Course.objects.get(course_code=data['course_code']).enrolled_students.add(data['currentUser'])
         return JsonResponse({'message': 'Enrollment successful'})   
     except Exception as e:
@@ -43,7 +51,7 @@ def enroll(request):
     
 @csrf_exempt
 def getCourse(request):
-    data = request.POST
+    data = request.POST  
     course = Course.objects.filter(enrolled_students=data['currentUser']).values()
     print(course)
     return JsonResponse({'course': list(course)})
@@ -55,15 +63,8 @@ def getCourse(request):
 @csrf_exempt    
 def getExactCourse(request, course_id):
     course = Course.objects.get(id=course_id)
-    
-    # Get all the course materials
     course_materials = CourseMaterial.objects.filter(course_code_id=course)
-    
-    # Get all the activities
-    activities = Activity.objects.filter(course_code_id=course)
-    
-    # Serialize the data
-   
+    activities = Activity.objects.filte
     
     return JsonResponse({
      
@@ -76,6 +77,7 @@ def getExactCourse(request, course_id):
     
     
 def lesson(request, lesson_id):
+    # SELECT * FROM CourseMaterial WHERE id = lesson_id 
     lesson = CourseMaterial.objects.get(id=lesson_id)
     return JsonResponse({"material_name": lesson.material_name, "material_description": lesson.material_description, "course_code": lesson.course_code.course_code, "course_name": lesson.course_code.course_name, "course_description": lesson.course_code.course_description})
 

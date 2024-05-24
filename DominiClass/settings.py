@@ -37,7 +37,6 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'unfold', 
-    'UserInterface.apps.UserinterfaceConfig',
     'Grades.apps.GradesConfig',
     'Course.apps.CourseConfig',
     'Activity.apps.ActivityConfig',
